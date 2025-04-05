@@ -1,0 +1,84 @@
+import zipfile
+from pathlib import Path
+from PIL import Image
+
+# Define paths
+site_dir = Path("/mnt/data/jciptv_site_final")
+site_dir.mkdir(exist_ok=True)
+
+# Salva a logo
+logo_path = site_dir / "logo.png"
+banner_path = site_dir / "banner.png"
+
+# Copia as imagens enviadas
+Path("/mnt/data/jc (1).png").rename(logo_path)
+Path("/mnt/data/ChatGPT Image 3_04_2025, 19_22_51.png").rename(banner_path)
+
+# Cria o index.html com links para os arquivos locais
+html_code = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JC IPTV - Assista Tudo Onde Quiser</title>
+  <style>
+    body {{
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #fff;
+    }}
+    header {{
+      background: #000;
+      padding: 20px;
+      text-align: center;
+    }}
+    header img {{
+      height: 80px;
+    }}
+    .hero {{
+      text-align: center;
+      padding: 40px 20px;
+    }}
+    .hero img {{
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }}
+    .footer {{
+      text-align: center;
+      padding: 20px;
+      background: #000;
+      color: #aaa;
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="JC IPTV Logo" />
+    <h1>JC IPTV</h1>
+    <p>Assista seus filmes, séries e canais favoritos onde quiser</p>
+  </header>
+
+  <div class="hero">
+    <img src="banner.png" alt="Banner JC IPTV" />
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2025 JC IPTV - Todos os direitos reservados</p>
+  </div>
+</body>
+</html>"""
+
+# Salva o index.html
+index_path = site_dir / "index.html"
+index_path.write_text(html_code, encoding="utf-8")
+
+# Cria o ZIP
+zip_path = "/mnt/data/JC-IPTV-SITE-COMPLETO.zip"
+with zipfile.ZipFile(zip_path, "w") as zipf:
+    zipf.write(index_path, arcname="index.html")
+    zipf.write(logo_path, arcname="logo.png")
+    zipf.write(banner_path, arcname="banner.png")
+
+zip_path
