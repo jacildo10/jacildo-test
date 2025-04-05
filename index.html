@@ -1,81 +1,166 @@
+import zipfile
+import os
 
-# Define paths
-site_dir = Path("/mnt/data/jciptv_site_final")
-site_dir.mkdir(exist_ok=True)
+# Caminho dos arquivos a serem incluídos no zip
+site_dir = "/mnt/data/site-jciptv"
+os.makedirs(site_dir, exist_ok=True)
 
-# Salva a logo
-logo_path = site_dir / "logo.png"
-banner_path = site_dir / "banner.png"
-
-# Copia as imagens enviadas
-Path("/mnt/data/jc (1).png").rename(logo_path)
-Path("/mnt/data/ChatGPT Image 3_04_2025, 19_22_51.png").rename(banner_path)
-
-# Cria o index.html com links para os arquivos locais
-html_code = f"""<!DOCTYPE html>
+# HTML do site com as imagens locais
+html_content = """
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JC IPTV - Assista Tudo Onde jacildo alves de oliveira</title>
+  <title>JC IPTV - Assista Tudo Onde Quiser</title>
   <style>
-    body {{
+    body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: #111;
       color: #fff;
-    }}
-    header {{
+    }
+    header {
       background: #000;
-      padding:40px;
+      padding: 20px;
       text-align: center;
-    }}
-    header img {{jc.png
-      height: 80px;
-    }}
-    .hero {{
+    }
+    header h1 {
+      color: gold;
+      margin: 0;
+    }
+    header img {
+      height: 60px;
+      margin-bottom: 10px;
+    }
+    .hero {
       text-align: center;
       padding: 40px 20px;
-    }}
-    .hero img {{
+    }
+    .hero img {
       max-width: 100%;
       height: auto;
       border-radius: 10px;
-    }}
-    .footer {{
+    }
+    .plans {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 40px 20px;
+      background: #1a1a1a;
+    }
+    .plan {
+      background: #222;
+      padding: 20px;
+      border: 2px solid gold;
+      border-radius: 10px;
+      width: 280px;
+      text-align: center;
+    }
+    .plan h3 {
+      margin: 0 0 10px;
+    }
+    .plan p {
+      margin: 5px 0;
+    }
+    .plan a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: gold;
+      color: #000;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .gallery {
+      background: #000;
+      padding: 40px 20px;
+    }
+    .gallery h2 {
+      text-align: center;
+      color: gold;
+      margin-bottom: 20px;
+    }
+    .gallery-container {
+      display: flex;
+      overflow-x: auto;
+      gap: 20px;
+      padding-bottom: 20px;
+    }
+    .gallery-container img {
+      height: 200px;
+      border-radius: 10px;
+      flex: 0 0 auto;
+    }
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 40px;
+      gap: 30px;
+    }
+    .feature {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      text-align: center;
+    }
+    .qrcode {
+      text-align: center;
+      padding: 40px;
+    }
+    .whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+    .whatsapp img {
+      width: 60px;
+    }
+    .footer {
       text-align: center;
       padding: 20px;
       background: #000;
       color: #aaa;
-    }}
+    }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo.png" alt="JC IPTV Logo" />
+    <img src="logo_jc_iptv_dourada.png" alt="Logo JC IPTV" />
     <h1>JC IPTV</h1>
     <p>Assista seus filmes, séries e canais favoritos onde quiser</p>
   </header>
 
   <div class="hero">
-    <img src="banner.png" alt="Banner JC " />
-  </div>
-
-  <div class="footer">
-    <p>&copy; 2025 JC IPTV - Todos os direitos reservados</p>
+    <img src="banner_jc_iptv_hero.png" alt="Banner IPTV">
+    <p><a href="https://api.whatsapp.com/send?phone=5543998694974&text=Olá%20Jacildo,%20gostaria%20de%20testar%20o%20serviço%20IPTV%20grátis!" style="background:red;color:#fff;padding:15px 25px;border-radius:8px;text-decoration:none;font-weight:bold;">Teste Grátis</a></p>
   </div>
 </body>
-</html>"""
+</html>
+"""
 
-# Salva o index.html
-index_path = site_dir / "index.html"
-index_path.write_text(html_code, encoding="utf-8")
+# Salva o HTML
+html_path = os.path.join(site_dir, "index.html")
+with open(html_path, "w", encoding="utf-8") as f:
+    f.write(html_content)
 
-# Cria o ZIP
-zip_path = "/mnt/data/JC-IPTV-SITE-COMPLETO.zip"
+# Copia as imagens para a pasta
+import shutil
+shutil.copy("/mnt/data/logo_jc_iptv_dourada.png", site_dir)
+shutil.copy("/mnt/data/banner_jc_iptv_hero.png", site_dir)
+
+# Gera o arquivo ZIP
+zip_path = "/mnt/data/site-jciptv.zip"
 with zipfile.ZipFile(zip_path, "w") as zipf:
-    zipf.write(index_path, arcname="index.html")
-    zipf.write(logo_path, arcname="logo.png")
-    zipf.write(banner_path, arcname="banner.png")
+    for foldername, subfolders, filenames in os.walk(site_dir):
+        for filename in filenames:
+            file_path = os.path.join(foldername, filename)
+            arcname = os.path.relpath(file_path, site_dir)
+            zipf.write(file_path, arcname)
 
 zip_path
